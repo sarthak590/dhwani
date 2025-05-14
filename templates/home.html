@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="home-sections">
+
+  <!-- Recommended Section -->
+  <div class="section-card">
+    <div class="section-title">Recommended for You</div>
+    <div class="horizontal-scroll">
+      {% for song in recommended_songs %}
+        <div class="song-card" onclick="playSong('{{ song.uri }}')">
+          {% if song.thumbnail_url %}
+            <img src="{{ song.thumbnail_url }}" alt="{{ song.title }}">
+          {% endif %}
+          <div class="title">{{ song.title }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Personalized Section -->
+  <div class="section-card">
+    <div class="section-title">Based on Your Listening</div>
+    <div class="horizontal-scroll">
+      {% for song in personalized_songs %}
+        <div class="song-card" onclick="playSong('{{ song.uri }}')">
+          {% if song.thumbnail_url %}
+            <img src="{{ song.thumbnail_url }}" alt="{{ song.title }}">
+          {% endif %}
+          <div class="title">{{ song.title }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

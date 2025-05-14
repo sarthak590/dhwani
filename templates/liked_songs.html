@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='liked_songs.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-height: 75vh; overflow-y: auto; padding-right: 10px;">
+  <h2>SOUND stash...</h2>
+
+  <div class="tb" >
+    {% if liked_songs %}
+      {% for song in liked_songs %}
+        <div class="song-card">
+          <div class="song-info">
+            <img src="{{ song.album_art_url }}" alt="{{ song.song_name }}">
+            <div class="song-name">{{ song.song_name }}</div>
+          </div>
+          <form method="POST" action="{{ url_for('remove_song', song_id=song.song_id) }}">
+            <button type="submit" class="remove-btn">Remove</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p style="text-align: center;">You have no liked songs yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

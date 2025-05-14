@@ -1,0 +1,108 @@
+/* Article Card Styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+}
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    margin-top: 7%;
+    height: 500px;
+    padding: 20px;
+    background: linear-gradient(to left, #0C121F, rgba(154, 75, 211, 0.8));
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+/* Hide scrollbar but keep scroll working */
+.container::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* optional */
+}
+h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: white;
+}
+h2:hover{
+    color: black;
+}
+
+.card {
+    border-radius: 15px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+.card-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #0C121F;
+}
+
+.card-text {
+    font-size: 0.95rem;
+    color: white;
+}
+.remove-btn {
+    background-color: #686472;
+    border: none;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;  
+}
+
+.remove-btn:hover {
+    background-color: red;
+}
+
+.delete-form {
+    display: flex;
+    justify-content: flex-end; /* Aligns button to the right */
+}
+
+.card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.text-end {
+    text-align: right;
+    color: white;
+  }
+  
+  .custom-song-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.custom-song-table th,
+.custom-song-table td {
+    vertical-align: middle;
+    padding: 1rem;
+}
+
+.album-art-column {
+    width: 20%;
+}
+
+.song-name-column {
+    width: 60%;
+    text-align: center;
+}
+
+.play-count-column {
+    width: 20%;
+    text-align: right;
+    color:white;
+}
+
+  

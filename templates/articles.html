@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='articles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="articles-container">
+  <!-- Left: Article Writing Section -->
+  <div class="writing-article">
+    <h2>
+      scribe the VIBE...
+    </h2>
+    <input type="text" id="article-title" placeholder="Article Title" class="input-field">
+    <textarea id="article-content" placeholder="Write your article here..." class="article-textarea"></textarea>
+    <button class="button-container" onclick="postArticle()" class="post-btn">Post Article</button>
+  </div>
+  
+  <!-- Right: Recent Articles Section -->
+  <div class="recent-articles">
+    <h2>Recent Articles</h2>
+    <div id="articles-list">
+      {% for article in articles %}
+      <div class="article">
+        <h3>{{ article.title }}</h3>
+        <p>{{ article.content }}</p>
+        <p class="author">By: {{ article.author }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function postArticle() {
+    const titleElem = document.getElementById("article-title");
+    const contentElem = document.getElementById("article-content");
+    const title = titleElem.value;
+    const content = contentElem.value;
+    
+    if (title.trim() === "" || content.trim() === "") {
+      alert("Please fill in both title and content!");
+      return;
+    }
+    
+    fetch('/articles', { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: title, content: content })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.success) {
+        const articleHTML = `
+          <div class="article">
+            <h3>${data.article.title}</h3>
+            <p>${data.article.content}</p>
+            <p class="author">By: ${data.article.author}</p>
+          </div>
+        `;
+        document.getElementById("articles-list").insertAdjacentHTML('afterbegin', articleHTML);
+        titleElem.value = "";
+        contentElem.value = "";
+      } else {
+        alert(data.error || "There was an error posting your article.");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("An error occurred while posting the article.");
+    });
+  }
+</script>
+{% endblock %}

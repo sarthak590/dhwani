@@ -1,0 +1,32 @@
+/* CSS of login.html and signup.html*/
+
+.ye {
+    background-color: #0C121F; /* Dark Blue Background */
+    margin: 0;
+}
+
+/* Top-left background image */
+.background-image.top-left {
+    position: fixed;
+    top: 30%;           /* Adjust vertical offset as needed */
+    left: -15%;         /* Adjust horizontal offset as needed */
+    height: 100%;
+    width: 50%;
+    background: url('/static/images/dhawani_logo.png') no-repeat center center/cover;
+    background-size: 200% 200%;
+}
+
+/* Bottom-right background image */
+.background-image.bottom-right {
+    position: fixed;
+    bottom: 30%;        /* Use bottom instead of top */
+    right: -15%;        /* Use right instead of left */
+    height: 100%;
+    width: 50%;
+    background: url('/static/images/dhawani_logo.png') no-repeat center center/cover;
+    background-size: 200% 200%;
+}
+
+/*.card {
+    background-color: #7935E0; /* Replace with your desired color 
+} */

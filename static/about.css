@@ -1,0 +1,102 @@
+/* CSS of about.html */
+
+body {
+    background-color: #0C121F;
+    /* Dark Blue */
+    color: #a64ac9;
+    /* Purple Text */
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Background Image on Hard Right */
+.background-image {
+    position: fixed;
+    /* Ensures it stays in place */
+    top: 30%;
+    right: -15%;
+    height: 100%;
+    width: 50%;
+    /* Covers the right half */
+    background: url('/static/images/dhawani_logo.png') no-repeat center center/cover;
+    background-size: 200% 200%;
+
+
+    z-index: -1;
+    /* Moves it behind everything */
+}
+
+h1 {
+    color: white;
+    /* White Text for Heading */
+    margin-top: -60px;
+    /* Move Heading Up */
+    font-size: 90px;
+    /* Bigger font size */
+}
+
+p {
+    margin-top: -10px;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* Container for text and buttons */
+.about-container {
+    width: 50%;
+    margin-left: 5%;
+    position: relative;
+    /* Ensures it stays above background */
+    z-index: 2;
+    /* Higher than the background image */
+}
+
+.buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    /* Space between buttons */
+}
+
+.btn-custom {
+    border-radius: 50px;
+    /* Extra Round */
+    padding: 15px 40px;
+    /* Bigger Buttons */
+    font-size: 30px;
+    /* Increase Button Font Size */
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Primary Button */
+.btn-primary {
+    background-color: #713C96;
+    /* Darker Blue */
+    border: none;
+    border-radius: 50px;
+    /* Extra Round */
+    font-size: 18px;
+
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background-color: #292D32;
+    /* Dark Purple */
+    border: none;
+    border-radius: 50px;
+    /* Extra Round */
+    font-size: 18px;
+
+}
+
+/* Hover Effects */
+.btn-primary:hover,
+.btn-secondary:hover {
+    background-color: #AF96BC;
+    color: #000000;
+    opacity: 0.8;
+}

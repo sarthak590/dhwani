@@ -1,0 +1,82 @@
+/* liked_songs.css */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #121212;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    margin-top: 7%;
+    height: 500px;
+    padding: 20px;
+    background: linear-gradient(to left, #0C121F, rgba(154, 75, 211, 0.8));
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+/* Hide scrollbar but keep scroll working */
+.container::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* optional */
+}
+h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: white;
+}
+h2:hover{
+    color: black;
+}
+.song-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to left, #0C121F, rgba(154, 75, 211, 0.8));
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    transition: background 0.3s ease;
+}
+
+.song-card:hover {
+    background-color: #333;
+}
+
+.song-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.song-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    background-color: #444;
+}
+
+.song-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.remove-btn {
+    background-color: #686472;
+    border: none;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.remove-btn:hover {
+    background-color: red;
+}

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ध्वनि</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  {% block extra_css %}{% endblock %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+</head>
+<body>
+  <div class="dropdown user-info">
+    <span>{{ username }}</span>
+  </div>
+
+  <div class="sidebar d-flex flex-column">
+    <div class="user-infoa">
+      <a href="/home"><span> ध्वनि</span></a>
+    </div>
+    <a href="/home" data-bs-toggle="tooltip" title="Home">
+      <i class="bi bi-house-fill"></i>
+    </a>
+    <a href="/stats" data-bs-toggle="tooltip" title="User Stats">
+      <i class="bi bi-person"></i>
+    </a>
+    <a href="/articles" data-bs-toggle="tooltip" title="Articles">
+      <i class="bi bi-journal-text"></i>
+    </a>
+    <a href="/liked_songs" data-bs-toggle="tooltip" title="Liked Songs">
+      <i class="bi bi-heart-fill"></i>
+    </a>
+    <a href="/logout" data-bs-toggle="tooltip" title="Logout">
+      <i class="bi bi-box-arrow-right"></i>
+    </a>
+  </div>
+
+  <div class="search-bar-wrapper position-relative">
+    <form id="search-form" class="search-form">
+      <input type="text" name="search" placeholder="Search for music..." class="search-input form-control" autocomplete="off" required>
+      <button type="submit" class="search-button">
+        <i class="fas fa-search"></i>
+      </button>
+    </form>
+    <div id="search-dropdown" class="dropdown-menu w-100"></div>
+  </div>
+
+  <div class="page-content">
+    {% block content %} {% endblock %}
+  </div>
+
+  <div class="music-player fixed-bottom p-2 bg-dark text-white">
+    <div class="player-inner d-flex align-items-center justify-content-between px-4">
+  
+      <!-- Left: Song Info -->
+      <div class="d-flex align-items-center gap-2">
+        <span id="current-song-title" class="fw-bold">Song Title</span>
+        <span>-</span>
+        <span id="current-song-artist">Artist Name</span>
+      </div>
+  
+      <!-- Center: Controls -->
+      <div class="center-controls">
+        <i class="bi bi-skip-start-fill" onclick="playPrev()"data-bs-toggle="tooltip" title="Previous Song"></i>
+        <i class="bi bi-play-fill" id="playPauseIcon" onclick="togglePlayPause()" data-bs-toggle="tooltip" title="Pause"></i>
+        <i class="bi bi-skip-end-fill" onclick="playNext()" data-bs-toggle="tooltip" title="Next Song"></i>
+      </div>
+  
+      <!-- Right: Like -->
+      <div class="like-icon"data-bs-toggle="tooltip" title="Like Song">
+        <i class="bi bi-heart" id="likeIcon" onclick="toggleLike()" ></i>
+      </div>
+  
+    </div>
+  </div>
+    <script>
+
+// Global reference
+let spotifyPlayer;
+
+// Like button toggle
+function toggleLike() {
+  const icon = document.getElementById("likeIcon");
+  icon.classList.toggle("bi-heart");
+  icon.classList.toggle("bi-heart-fill");
+
+  if (icon.classList.contains("bi-heart-fill")) {
+    spotifyPlayer.getCurrentState().then(state => {
+      if (state?.track_window?.current_track) {
+        const songId = state.track_window.current_track.id;
+        likeSong(songId);
+      }
+    });
+  }
+}
+
+// call /is_liked and flip the heart icon accordingly
+async function updateLikeIcon(songId) {
+  try {
+    const res = await fetch(`/is_liked?song_id=${songId}`);
+    const { liked } = await res.json();
+    const icon = document.getElementById("likeIcon");
+    icon.classList.toggle("bi-heart-fill", liked);
+    icon.classList.toggle("bi-heart",      !liked);
+  } catch (err) {
+    console.error("Could not fetch like status", err);
+  }
+}
+
+// Send like request
+function likeSong(songId) {
+  fetch('/like_song', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'song_id=' + encodeURIComponent(songId)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("Song liked!");
+    } else {
+      alert("Error liking song: " + data.error);
+    }
+  });
+}
+
+// Record listens
+function recordListen(songId) {
+  fetch('/record_listen', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'song_id=' + encodeURIComponent(songId)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      console.log("Listen recorded");
+    } else {
+      console.error("Failed to record listen:", data.error);
+    }
+  });
+}
+
+// Handle Spotify Web Playback SDK
+window.onSpotifyWebPlaybackSDKReady = () => {
+  const token = "{{ spotify_token }}";
+  spotifyPlayer = new Spotify.Player({
+    name: 'Dhwani Player',
+    getOAuthToken: cb => cb(token),
+    volume: 0.5
+  });
+
+  // Handle ready
+  spotifyPlayer.addListener('ready', ({ device_id }) => {
+    console.log("Device ready:", device_id);
+    transferPlaybackHere(device_id);
+  });
+
+  // Playback state changed
+  spotifyPlayer.addListener('player_state_changed', state => {
+    if (!state?.track_window?.current_track) {
+      document.getElementById("current-song-title").textContent = "No song playing";
+      document.getElementById("current-song-artist").textContent = "";
+      return;
+    }
+
+    const track = state.track_window.current_track;
+    document.getElementById("current-song-title").textContent = track.name;
+    document.getElementById("current-song-artist").textContent = " - " + track.artists.map(a => a.name).join(", ");
+    
+    const playPauseIcon = document.querySelector("#playPauseIcon");
+    playPauseIcon.className = state.paused ? "bi bi-play-fill text-white" : "bi bi-pause-fill text-white";
+  });
+
+  // Connect player
+  spotifyPlayer.connect();
+};
+
+// Transfer playback to this device
+function transferPlaybackHere(deviceId) {
+  fetch("https://api.spotify.com/v1/me/player", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer {{ spotify_token }}`
+    },
+    body: JSON.stringify({ device_ids: [deviceId], play: false })
+  })
+  .then(res => {
+    if (!res.ok) {
+      res.text().then(text => console.error("Transfer failed:", text));
+    }
+  });
+}
+
+// Play song
+function playSong(uri) {
+  fetch("https://api.spotify.com/v1/me/player/play", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer {{ spotify_token }}`
+    },
+    body: JSON.stringify({ uris: [uri] })
+  })
+  .then(res => {
+    if (res.status === 204) {
+      console.log("Song is playing");
+      const songId = uri.split(':')[2];
+      recordListen(songId);
+      updateLikeIcon(songId);
+    } else {
+      console.error("Failed to play song:", res);
+    }
+  })
+  .catch(err => console.error("Playback error:", err));
+}
+// Search functionality
+document.getElementById("search-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+
+  fetch("/search_tracks", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    const dropdown = document.getElementById("search-dropdown");
+    dropdown.innerHTML = "";
+    if (data.error) {
+      alert(data.error);
+      dropdown.style.display = "none";
+      return;
+    }
+
+    data.forEach(track => {
+      const item = document.createElement("a");
+      item.className = "dropdown-item";
+      item.href = "#";
+      item.textContent = `${track.name} - ${track.artist}`;
+      item.dataset.uri = track.uri;
+      item.addEventListener("click", function (e) {
+        e.preventDefault();
+        playSong(track.uri);
+        dropdown.style.display = "none";
+      });
+      dropdown.appendChild(item);
+    });
+
+    dropdown.style.display = "block";
+  })
+  .catch(err => console.error("Search error:", err));
+});
+
+// Toggle play/pause
+function togglePlayPause() {
+  spotifyPlayer.getCurrentState().then(state => {
+    if (!state) return;
+
+    const icon = document.querySelector("#playPauseIcon");
+
+    if (state.paused) {
+      fetch("https://api.spotify.com/v1/me/player/play", {
+        method: "PUT",
+        headers: { "Authorization": `Bearer {{ spotify_token }}` }
+      });
+      icon.className = "bi bi-pause-fill text-white";
+    } else {
+      fetch("https://api.spotify.com/v1/me/player/pause", {
+        method: "PUT",
+        headers: { "Authorization": `Bearer {{ spotify_token }}` }
+      });
+      icon.className = "bi bi-play-fill text-white";
+    }
+  });
+}
+
+// Next / Previous track
+document.getElementById("next-btn").addEventListener("click", () => {
+  fetch("https://api.spotify.com/v1/me/player/next", {
+    method: "POST",
+    headers: { "Authorization": `Bearer {{ spotify_token }}` }
+  });
+});
+
+document.getElementById("prev-btn").addEventListener("click", () => {
+  fetch("https://api.spotify.com/v1/me/player/previous", {
+    method: "POST",
+    headers: { "Authorization": `Bearer {{ spotify_token }}` }
+  });
+});
+
+</script>
+  
+</body>
+</html>

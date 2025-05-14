@@ -1,0 +1,101 @@
+/* Ensure the body background matches the card background */
+body {
+    background-color: #292D32;
+  }
+  
+  /* Container for both sections */
+  .articles-container {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;  /* Vertically center the inner content */
+    width: 90%;
+    margin: auto;
+    gap: 20px;
+    /* Set a height so we can center vertically; adjust if needed */
+    height: calc(100vh - 100px);
+  }
+
+  .button-container {
+    font-size: 14px; /* Increase text size */
+    padding: 15px 40px; /* Bigger padding */
+    border-radius: 30px; /* Rounder edges */
+    background-color: #000000; /* Bootstrap blue */
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+  margin-left: 40%;
+}
+/* Matching background for both sections */
+.writing-article {
+  background: #7B3BAD; /* Same as body background */
+  padding: 20px;
+  border-radius: 10px;
+  width: 50%; /* Adjust size */
+  min-height: 500px;
+  background: linear-gradient(to left, #0C121F, rgba(154, 75, 211, 0.8));
+  margin-top: 10%;
+}
+.recent-articles{
+  background-color: #0C121F;
+  min-height: 500px;
+  margin-top:10%;
+  color:white;
+}
+.button-container:hover {
+  background-color: #292D32; /* Darker shade on hover */
+  color: white;
+}
+  /* Article Writing Section (70% width) */
+  .writing-article {
+    width: 70%;
+    padding: 20px;
+    border-radius: 10px;
+    height: 400px; /* Reduced fixed height */
+  }
+  
+  /* Recent Articles Section (30% width) */
+  .recent-articles {
+    width: 30%;
+    padding: 20px;
+    border-radius: 10px;
+    height: 400px;  /* Reduced fixed height */
+    overflow-y: auto;
+  }
+  /* Hide scrollbar but keep scroll working */
+.recent-articles::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* optional */
+}
+  /* Styling for input fields and textarea */
+  .input-field, .article-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Adjust textarea height */
+  .article-textarea {
+    height: 275px;
+    resize: vertical;
+    
+  }
+  
+  .writing-article, 
+.recent-articles {
+    font-family: "Times New Roman", Times, serif;
+}
+  
+  /* Styling for each article item */
+  .article {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  
+  .article:last-child {
+    border-bottom: none;
+  }
+  
